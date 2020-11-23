@@ -12,7 +12,7 @@ export default class Chat extends React.Component {
     }
 
     componentDidMount = () => {
-        const ws = new WebSocket("ws://localhost:8080/websocket");
+        const ws = new WebSocket(`ws://${location.host}:8080/websocket`);
 
         ws.onopen = () => {
             utils.joinRoom(ws);
