@@ -1,6 +1,6 @@
 const SManager = require("../socketmanager.js");
 
-const onmessage = async (payload) => {
+const onmessage = function (payload) {
     const socket = this;
     var data = JSON.parse(payload);
     var op = data.op;

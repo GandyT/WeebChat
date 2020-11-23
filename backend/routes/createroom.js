@@ -8,3 +8,5 @@ router.post("/", async (req, res) => {
     SManager.createRoom(roomId);
     return res.send({ success: true });
 });
+
+module.exports = router;

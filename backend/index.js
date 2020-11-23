@@ -8,6 +8,9 @@ app.disable("x-powered-by");
 
 const Cors = require("cors");
 const BodyParser = require("body-parser");
+const Path = require("path");
+const WS = require("ws");
+
 
 /* MIDDLEWARE */
 app.use(Cors());
@@ -17,8 +20,38 @@ app.use(BodyParser.urlencoded({ extended: false }));
 /* ROUTES */
 app.use("/api/createroom", require("./routes/createroom.js"));
 
+/* CATCH-ALL FRONTEND */
+app.get('/*', (req, res) => {
+    res.sendFile(Path.join(__dirname + '/../frontend/build/index.html'));
+});
+
 app.listen(process.env.PORT || 80, () => {
     console.log(`Listening on port ${process.env.PORT || 80}!`);
 });
 
-module.exports = app; // Exporting it for use to create a websocket server.
+/* 
+=========================================================================================
+    WEBSOCKET SERVER STUFF. IM KIND OF DUMB AND PUT THIS IN A DIFFERENT FILE
+=========================================================================================
+*/
+
+const wsServer = new WS.Server({ port: 8080, path: "/websocket" });
+wsServer.getUniqueID = () => {
+    const s4 = () => {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4();
+};
+
+wsServer.on("connection", socket => {
+    var validatePayload = { op: 1, t: "SUCCESS" }
+    socket.send(JSON.stringify(validatePayload));
+    socket.id = wsServer.getUniqueID();
+
+    /* SOCKET HANDLERS */
+    socket.on("message", require("./websocket/handlers/onmessage.js").bind(socket));
+    socket.on("close", require("./websocket/handlers/onclose.js").bind(socket));
+});
+
+
+
