@@ -16,6 +16,7 @@ const WS = require("ws");
 app.use(Cors());
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({ extended: false }));
+app.use(Express.static(Path.join(__dirname, '../Frontend/build')));
 
 /* ROUTES */
 app.use("/api/createroom", require("./routes/createroom.js"));
@@ -35,7 +36,7 @@ app.listen(process.env.PORT || 80, () => {
 =========================================================================================
 */
 
-const wsServer = new WS.Server({ port: 8080, path: "/websocket" });
+const wsServer = new WS.Server({ port: process.env.WSPORT || 8080, path: "/websocket" });
 wsServer.getUniqueID = () => {
     const s4 = () => {
         return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);

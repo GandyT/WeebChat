@@ -7,7 +7,7 @@ import Chat from "./Pages/Chat/component.js";
 class App extends React.Component {
   render() {
     return (
-      <Router>
+      <Router basename="/">
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/room" component={Chat} />
