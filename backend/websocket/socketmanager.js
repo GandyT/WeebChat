@@ -10,7 +10,11 @@ module.exports = {
     purge: async () => {
         for (let [key, value] of Object.entries(rooms)) {
             value = value.connections.filter(socket => socket.readyState === socket.OPEN);
-            rooms[key] = value;
+            if (value.length == 0) {
+                delete rooms[key]
+            } else {
+                rooms[key].connections = value;
+            }
         }
         console.log("Purging sockets.")
     },
